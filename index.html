@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiro — Jobbet hittar dig</title>
+<meta name="description" content="Hiro är ett nytt sätt att hitta jobb. Snart här.">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f2ec;
+    --ink: #0f0e0c;
+    --accent: #e8440a;
+    --soft: #e8e3d8;
+    --muted: #888077;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Instrument Sans', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
+  }
+
+  /* Big decorative circle */
+  .circle {
+    position: fixed;
+    width: 700px;
+    height: 700px;
+    border-radius: 50%;
+    border: 1px solid rgba(15,14,12,0.08);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spin 40s linear infinite;
+  }
+  .circle-2 {
+    width: 500px;
+    height: 500px;
+    animation-duration: 28s;
+    animation-direction: reverse;
+    border-color: rgba(15,14,12,0.05);
+  }
+  .circle-3 {
+    width: 300px;
+    height: 300px;
+    animation-duration: 18s;
+    border-color: rgba(232,68,10,0.12);
+  }
+  @keyframes spin {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+
+  /* Dot on circle */
+  .circle::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Main layout */
+  .wrapper {
+    position: relative;
+    z-index: 10;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 36px 44px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* Top row */
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .logo {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--ink);
+  }
+  .logo em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 6px 14px;
+    border: 1px solid rgba(15,14,12,0.15);
+    border-radius: 100px;
+  }
+
+  /* Center hero */
+  .hero {
+    text-align: center;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .eyebrow::before, .eyebrow::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  h1 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 800;
+    font-size: clamp(52px, 9vw, 110px);
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 28px;
+  }
+
+  h1 .line2 {
+    display: block;
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 380px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  /* Email form */
+  .notify-form {
+    display: flex;
+    gap: 8px;
+    max-width: 360px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid rgba(15,14,12,0.12);
+    border-radius: 14px;
+    padding: 6px 6px 6px 18px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .notify-form:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,68,10,0.08);
+  }
+
+  .notify-form input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    min-width: 0;
+  }
+  .notify-form input::placeholder { color: #bbb; }
+
+  .notify-btn {
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .notify-btn:hover { background: var(--accent); transform: scale(1.02); }
+  .notify-btn:active { transform: scale(0.98); }
+
+  .thanks {
+    display: none;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-top: 12px;
+    animation: fadeUp 0.4s ease forwards;
+  }
+
+  /* Bottom row */
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.9s forwards;
+  }
+
+  .tagline {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .tagline strong { color: var(--ink); display: block; font-weight: 500; }
+
+  .dots {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--soft);
+    border: 1px solid rgba(15,14,12,0.12);
+    transition: background 0.3s;
+  }
+  .dot.active { background: var(--accent); border-color: var(--accent); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .wrapper { padding: 28px 24px; }
+    .badge { display: none; }
+    h1 { font-size: 56px; }
+    .bottom { flex-direction: column; gap: 20px; align-items: center; text-align: center; }
+    .circle { width: 440px; height: 440px; }
+    .circle-2 { width: 320px; height: 320px; }
+    .circle-3 { width: 200px; height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="circle"></div>
+<div class="circle circle-2"></div>
+<div class="circle circle-3"></div>
+
+<div class="wrapper">
+  <div class="top">
+    <div class="logo">H<em>i</em>ro</div>
+    <div class="badge">Kommer snart</div>
+  </div>
+
+  <div class="hero">
+    <div class="eyebrow">Nytt sätt att jobba</div>
+    <h1>
+      Jobbet<br>
+      <span class="line2">hittar dig.</span>
+    </h1>
+    <p class="sub">Swipa dig till drömjobbet. Hiro matchar dig med rätt arbetsgivare — enkelt, snabbt och på dina villkor.</p>
+
+    <div class="notify-form" id="form">
+      <input type="email" id="emailInput" placeholder="din@email.se" />
+      <button class="notify-btn" onclick="subscribe()">Notifiera mig</button>
+    </div>
+    <div class="thanks" id="thanks">✓ Tack! Vi hör av oss när vi lanserar.</div>
+  </div>
+
+  <div class="bottom">
+    <div class="tagline">
+      <strong>hiro.se</strong>
+      Lanserar 2026
+    </div>
+    <div class="dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+function subscribe() {
+  const email = document.getElementById('emailInput').value;
+  if (!email || !email.includes('@')) {
+    document.getElementById('emailInput').style.outline = '2px solid #e8440a';
+    setTimeout(() => document.getElementById('emailInput').style.outline = '', 1000);
+    return;
+  }
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('thanks').style.display = 'block';
+}
+
+document.getElementById('emailInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') subscribe();
+});
+
+// Animate dots
+let d = 0;
+setInterval(() => {
+  document.querySelectorAll('.dot').forEach((dot, i) => {
+    dot.classList.toggle('active', i === d);
+  });
+  d = (d + 1) % 3;
+}, 1800);
+</script>
+</body>
+</html>
