@@ -449,3 +449,9 @@ html:has(.lpanel[open]){overflow:hidden}
   .num,.prow{animation:none !important}
   .pcard,.roll .strip,.thumb{transition:none !important}
 }
+
+.founder{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
+.founder img{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none;border:2px solid rgba(239,234,255,.6);box-shadow:0 8px 20px -8px rgba(10,4,60,.6)}
+.founder .fname{font-size:15px;font-weight:600;color:#fff}
+.founder .mail{font-size:15px;min-height:0}
+.vi-wrap{max-width:760px}
