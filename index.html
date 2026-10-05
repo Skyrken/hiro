@@ -1,345 +1,364 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="sv">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hiro — Jobbet hittar dig</title>
-<meta name="description" content="Hiro är ett nytt sätt att hitta jobb. Snart här.">
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --bg: #f5f2ec;
-    --ink: #0f0e0c;
-    --accent: #e8440a;
-    --soft: #e8e3d8;
-    --muted: #888077;
-  }
-
-  html, body {
-    height: 100%;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Instrument Sans', sans-serif;
-    overflow: hidden;
-  }
-
-  /* Grain overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0.5;
-  }
-
-  /* Big decorative circle */
-  .circle {
-    position: fixed;
-    width: 700px;
-    height: 700px;
-    border-radius: 50%;
-    border: 1px solid rgba(15,14,12,0.08);
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    animation: spin 40s linear infinite;
-  }
-  .circle-2 {
-    width: 500px;
-    height: 500px;
-    animation-duration: 28s;
-    animation-direction: reverse;
-    border-color: rgba(15,14,12,0.05);
-  }
-  .circle-3 {
-    width: 300px;
-    height: 300px;
-    animation-duration: 18s;
-    border-color: rgba(232,68,10,0.12);
-  }
-  @keyframes spin {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-  }
-
-  /* Dot on circle */
-  .circle::after {
-    content: '';
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    top: -4px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  /* Main layout */
-  .wrapper {
-    position: relative;
-    z-index: 10;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 36px 44px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  /* Top row */
-  .top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.2s forwards;
-  }
-
-  .logo {
-    font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 800;
-    font-size: 22px;
-    letter-spacing: -0.5px;
-    color: var(--ink);
-  }
-  .logo em {
-    font-style: normal;
-    color: var(--accent);
-  }
-
-  .badge {
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 6px 14px;
-    border: 1px solid rgba(15,14,12,0.15);
-    border-radius: 100px;
-  }
-
-  /* Center hero */
-  .hero {
-    text-align: center;
-    opacity: 0;
-    animation: fadeUp 1s ease 0.5s forwards;
-  }
-
-  .eyebrow {
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-  .eyebrow::before, .eyebrow::after {
-    content: '';
-    width: 24px;
-    height: 1px;
-    background: var(--accent);
-    opacity: 0.5;
-  }
-
-  h1 {
-    font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 800;
-    font-size: clamp(52px, 9vw, 110px);
-    line-height: 0.92;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin-bottom: 28px;
-  }
-
-  h1 .line2 {
-    display: block;
-    color: var(--accent);
-    font-style: italic;
-  }
-
-  .sub {
-    font-size: 16px;
-    color: var(--muted);
-    max-width: 380px;
-    margin: 0 auto 40px;
-    line-height: 1.6;
-  }
-
-  /* Email form */
-  .notify-form {
-    display: flex;
-    gap: 8px;
-    max-width: 360px;
-    margin: 0 auto;
-    background: white;
-    border: 1px solid rgba(15,14,12,0.12);
-    border-radius: 14px;
-    padding: 6px 6px 6px 18px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .notify-form:focus-within {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(232,68,10,0.08);
-  }
-
-  .notify-form input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'Instrument Sans', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    min-width: 0;
-  }
-  .notify-form input::placeholder { color: #bbb; }
-
-  .notify-btn {
-    background: var(--ink);
-    color: var(--bg);
-    border: none;
-    border-radius: 10px;
-    padding: 10px 18px;
-    font-family: 'Bricolage Grotesque', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: background 0.2s, transform 0.15s;
-  }
-  .notify-btn:hover { background: var(--accent); transform: scale(1.02); }
-  .notify-btn:active { transform: scale(0.98); }
-
-  .thanks {
-    display: none;
-    font-size: 14px;
-    color: var(--accent);
-    font-weight: 500;
-    margin-top: 12px;
-    animation: fadeUp 0.4s ease forwards;
-  }
-
-  /* Bottom row */
-  .bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.9s forwards;
-  }
-
-  .tagline {
-    font-size: 12px;
-    color: var(--muted);
-    line-height: 1.6;
-  }
-  .tagline strong { color: var(--ink); display: block; font-weight: 500; }
-
-  .dots {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--soft);
-    border: 1px solid rgba(15,14,12,0.12);
-    transition: background 0.3s;
-  }
-  .dot.active { background: var(--accent); border-color: var(--accent); }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Mobile */
-  @media (max-width: 600px) {
-    .wrapper { padding: 28px 24px; }
-    .badge { display: none; }
-    h1 { font-size: 56px; }
-    .bottom { flex-direction: column; gap: 20px; align-items: center; text-align: center; }
-    .circle { width: 440px; height: 440px; }
-    .circle-2 { width: 320px; height: 320px; }
-    .circle-3 { width: 200px; height: 200px; }
-  }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hiro – jobb, när båda vill</title>
+<meta name="description" content="Du swipar jobb. Rekryteraren swipar dig. Säger båda ja öppnas chatten. Hiro matchar jobbsökare och rekryterare i Sverige.">
+<meta name="theme-color" content="#3a1fe0">
+<link rel="canonical" href="https://hiro.se/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hiro.se/">
+<meta property="og:site_name" content="Hiro">
+<meta property="og:title" content="Hiro – jobb, när båda vill">
+<meta property="og:description" content="Du swipar jobb. Rekryteraren swipar dig. Säger båda ja öppnas chatten.">
+<meta property="og:image" content="https://hiro.se/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="sv_SE">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..700;1,9..40,400&amp;family=Instrument+Serif:ital@0;1&amp;display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+<div class="root">
 
-<div class="circle"></div>
-<div class="circle circle-2"></div>
-<div class="circle circle-3"></div>
-
-<div class="wrapper">
-  <div class="top">
-    <div class="logo">H<em>i</em>ro</div>
-    <div class="badge">Kommer snart</div>
+<section class="hero live" id="top" aria-label="Hiro">
+  <div class="half l live" aria-hidden="true">
+    <div class="fl la d1" style="width: 90%; height: 70%; left: -20%; top: -6%"></div>
+    <div class="fl lb d2" style="width: 80%; height: 62%; right: -26%; top: 36%"></div>
+    <div class="fl lc d3" style="width: 90%; height: 56%; left: 4%; bottom: -22%"></div>
+    <div class="fl ld d1" style="width: 50%; height: 40%; left: 40%; top: 10%"></div>
+    <svg class="grain"><filter id="hiroGrain"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"></feTurbulence><feColorMatrix type="saturate" values="0"></feColorMatrix></filter><rect width="100%" height="100%" filter="url(#hiroGrain)"></rect></svg>
+  </div>
+  <div class="half r live" aria-hidden="true">
+    <div class="fl ia d2" style="width: 90%; height: 70%; left: -30%; top: 20%"></div>
+    <div class="fl ib d1" style="width: 90%; height: 70%; right: -30%; top: -24%"></div>
+    <div class="fl ic d3" style="width: 70%; height: 60%; right: -10%; bottom: -20%"></div>
+    <svg class="grain"><rect width="100%" height="100%" filter="url(#hiroGrain)"></rect></svg>
   </div>
 
-  <div class="hero">
-    <div class="eyebrow">Nytt sätt att jobba</div>
-    <h1>
-      Jobbet<br>
-      <span class="line2">hittar dig.</span>
-    </h1>
-    <p class="sub">Swipa dig till drömjobbet. Hiro matchar dig med rätt arbetsgivare — enkelt, snabbt och på dina villkor.</p>
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Hiro, till toppen">
+      <span class="wm live">Hi<span class="ro">ro<span class="dot">.</span><span class="tail" aria-hidden="true">ro<span class="dot">.</span></span></span></span>
+    </a>
+    <nav class="nav" aria-label="Huvudmeny">
+      <a class="opt opt2" href="#soker">Söker jobb</a>
+      <a class="opt opt2" href="#rekryterar">Rekryterar</a>
+      <a class="opt2" href="#priser">Priser</a>
+      <a class="opt2" href="#vi">Vi</a>
+      <a class="navcta" href="https://app.hiro.se/">Öppna Hiro</a>
+    </nav>
+  </header>
 
-    <div class="notify-form" id="form">
-      <input type="email" id="emailInput" placeholder="din@email.se" />
-      <button class="notify-btn" onclick="subscribe()">Notifiera mig</button>
+  <h1 class="slogan"><span class="sa"><span class="l1">Jobb, när</span> <span class="l2">båda vill.</span></span><span class="sb" aria-hidden="true"><span class="l1">Jobb, när</span> <span class="l2">båda vill.</span></span></h1>
+
+  <p class="sr">En jobbsökare säger ja till ett jobb, rekryteraren säger ja tillbaka, och chatten öppnas.</p>
+
+  <div class="deck-h l" aria-hidden="true">
+    <div class="back"><i class="a"></i><i class="b"></i><i class="c"></i></div>
+    <div class="card hc l" id="hero-l">
+      <div class="cover c2" id="hero-cover"><span class="plate"><span data-h="job.initial">L</span></span></div>
+      <div class="cbody">
+        <div class="ct"><span data-h="job.title">Redovisningsekonom</span></div>
+        <div class="cs"><span data-h="job.company">Lindqvist &amp; Berg Revision</span></div>
+        <div class="chips"><span class="chip"><span data-h="job.place">Solna</span></span><span class="chip"><span data-h="job.pay">38–44 000 kr</span></span><span class="chip"><span data-h="job.form">Hybrid</span></span></div>
+        <div class="why">Därför visas det: <span data-h="job.why">bokslut och fem års erfarenhet</span></div>
+      </div>
+      <div class="stamp yes">Ja</div>
     </div>
-    <div class="thanks" id="thanks">✓ Tack! Vi hör av oss när vi lanserar.</div>
   </div>
 
-  <div class="bottom">
-    <div class="tagline">
-      <strong>hiro.se</strong>
-      Lanserar 2026
-    </div>
-    <div class="dots">
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+  <div class="deck-h r" aria-hidden="true">
+    <div class="back"><i class="a"></i><i class="b"></i><i class="c"></i></div>
+    <div class="card hc r cand">
+      <div class="cover c1"><span class="avatar"><span data-h="cand.initials">SL</span></span></div>
+      <div class="cbody">
+        <div class="ct"><span data-h="cand.name">Sara L.</span></div>
+        <div class="cs"><span data-h="cand.role">Redovisningsekonom i fem år</span></div>
+        <div class="chips"><span class="chip"><span data-h="cand.place">Solna</span></span><span class="chip"><span data-h="cand.skill">Bokslut</span></span></div>
+        <div class="liked"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.8-4.7-9.4-9.5C1.5 7.6 3.6 4.5 7 4.5c2 0 3.3 1 5 2.8 1.7-1.8 3-2.8 5-2.8 3.4 0 5.5 3.1 4.4 6.5-1.6 4.8-9.4 9.5-9.4 9.5z"></path></svg>Sa ja till er annons</div>
+      </div>
+      <div class="stamp yes">Ja</div>
     </div>
   </div>
+
+  <div class="mpill" aria-hidden="true">Ni matchade!</div>
+  <div class="burst" aria-hidden="true">
+    <span class="ray" style="transform: rotate(0deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(36deg)"><i class="spk near c2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(72deg)"><i class="spk c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(108deg)"><i class="spk near c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(144deg)"><i class="spk c2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(180deg)"><i class="spk near c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(216deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(252deg)"><i class="spk near c2"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(288deg)"><i class="spk c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+    <span class="ray" style="transform: rotate(324deg)"><i class="spk near c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+  </div>
+  <div class="bub b1" aria-hidden="true"><span data-h="chat1">Hej Sara! Har du tid för ett samtal på torsdag?</span></div>
+  <div class="bub b2" aria-hidden="true"><span data-h="chat2">Gärna. Efter lunch passar bra.</span></div>
+
+  <div class="side l">
+    <p>Du swipar jobb.</p>
+    <a class="cta ind" href="https://app.hiro.se/registrera/jobbsokare">Jag söker jobb</a>
+  </div>
+  <div class="side r">
+    <p>Du swipar kandidater.</p>
+    <a class="cta lt" href="https://app.hiro.se/registrera/rekryterare">Jag rekryterar</a>
+  </div>
+</section>
+
+<section class="sec lav" id="soker" aria-labelledby="soker-h">
+  <div class="fl la" style="width: 900px; height: 700px; left: -300px; top: -200px" aria-hidden="true"></div>
+  <div class="fl lb" style="width: 800px; height: 640px; right: -260px; bottom: -220px" aria-hidden="true"></div>
+  <div class="fl lc" style="width: 600px; height: 500px; left: 30%; top: 30%" aria-hidden="true"></div>
+  <svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#hiroGrain)"></rect></svg>
+  <div class="wrap two">
+    <div>
+      <h2 class="h2" id="soker-h">Swipa några.</h2>
+      <p class="lead">Höger för ja, vänster för nej. Säger arbetsgivaren också ja öppnas chatten.</p>
+      <button class="more" type="button" aria-expanded="false" aria-controls="soker-mer" data-more><span class="pm" aria-hidden="true"></span><span class="lbl">Så funkar det för dig</span></button>
+      <div id="soker-mer" hidden>
+                  <div class="reveal">
+            <ol class="steps">
+              <li><span><b>Skapa en profil.</b> Eller ladda upp ditt CV, så fyller Hiro i den åt dig.</span></li>
+              <li><span><b>Swipa jobb.</b> Du ser alltid varför ett jobb visas: kompetens, ort, lön och om det går att jobba på distans.</span></li>
+              <li><span><b>Säger båda ja öppnas chatten.</b> Innan dess kan ingen skriva till dig.</span></li>
+            </ol>
+            <p class="fine">Att söka jobb på Hiro kostar ingenting.</p>
+          </div>
+      </div>
+    </div>
+    <div class="play">
+      <div class="deck" id="deck">
+                <div class="endp reveal" id="endp" hidden>
+            <h3>Det var alla.</h3>
+            <p>De riktiga annonserna finns i appen.</p>
+            <a class="cta ind" href="https://app.hiro.se/">Öppna Hiro</a>
+            <button class="cta plain" type="button" id="restart">Börja om</button>
+          </div>
+        <div class="mover" id="match" role="dialog" aria-label="Ni matchade" hidden>
+            <div class="burst2" aria-hidden="true">
+              <span class="ray" style="transform: rotate(0deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(45deg)"><i class="spk near c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(90deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(135deg)"><i class="spk near c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(180deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(225deg)"><i class="spk near c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(270deg)"><i class="spk c1"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+              <span class="ray" style="transform: rotate(315deg)"><i class="spk near c3"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5c.7 5.2 4.3 8.8 9.5 9.5-5.2.7-8.8 4.3-9.5 9.5-.7-5.2-4.3-8.8-9.5-9.5 5.2-.7 8.8-4.3 9.5-9.5z"></path></svg></i></span>
+            </div>
+            <div class="mpair" aria-hidden="true"><span class="you">Du</span><span class="co" id="m-ini"></span></div>
+            <h3>Ni matchade!</h3>
+            <p><span id="m-co"></span> sa också ja. Nu kan ni prata.</p>
+            <div class="mbtns">
+              <a class="cta uv" href="https://app.hiro.se/registrera/jobbsokare">Skapa konto</a>
+              <button class="cta plain" type="button" id="m-close">Fortsätt swipa</button>
+            </div>
+          </div>
+        <div class="toast" id="toast" role="status" hidden></div>
+      </div>
+      <div class="acts">
+        <button class="act no" type="button" aria-label="Nej" id="say-no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+        <button class="act yes" type="button" aria-label="Ja" id="say-yes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.8-4.7-9.4-9.5C1.5 7.6 3.6 4.5 7 4.5c2 0 3.3 1 5 2.8 1.7-1.8 3-2.8 5-2.8 3.4 0 5.5 3.1 4.4 6.5-1.6 4.8-9.4 9.5-9.4 9.5z"></path></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec ind rek" id="rekryterar" aria-labelledby="rek-h">
+  <div class="fl ia" style="width: 1000px; height: 800px; right: -300px; top: -300px" aria-hidden="true"></div>
+  <div class="fl ib" style="width: 900px; height: 700px; left: -300px; bottom: -300px" aria-hidden="true"></div>
+  <div class="wrap two">
+    <div>
+      <h2 class="h2" id="rek-h">Prata bara med dem som redan sagt ja.</h2>
+      <p class="lead">Ingen hög med ansökningar att sålla i. Bara kandidater som vill jobba hos er.</p>
+      <button class="more" type="button" aria-expanded="false" aria-controls="rek-mer" data-more><span class="pm" aria-hidden="true"></span><span class="lbl">Så funkar det för er</span></button>
+      <div id="rek-mer" hidden>
+                  <div class="reveal">
+            <ol class="steps">
+              <li><span><b>Lägg upp en annons.</b> Eller importera en som redan ligger ute.</span></li>
+              <li><span><b>Se vilka som sagt ja.</b> Ja-listan visar vilka de är och varför de passar.</span></li>
+              <li><span><b>Säg ja tillbaka.</b> Då öppnas chatten, och ni kan boka ett möte direkt därifrån.</span></li>
+            </ol>
+          </div>
+      </div>
+    </div>
+    <div class="panelcol">
+      <div class="panel">
+        <div class="phead">
+          <div><div class="ptitle">Redovisningsekonom</div><div class="psub">Lindqvist &amp; Berg Revision, Solna</div></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><span class="num n1" aria-hidden="true"></span><span class="sr">120</span><span class="lb">har sett annonsen</span></div>
+          <div class="stat"><span class="num n2" aria-hidden="true"></span><span class="sr">46</span><span class="lb">har sagt ja</span></div>
+          <div class="stat"><span class="num n3" aria-hidden="true"></span><span class="sr">18</span><span class="lb">matchningar</span></div>
+          <div class="stat"><span class="num n4" aria-hidden="true"></span><span class="sr">6</span><span class="lb">intervjuer</span></div>
+        </div>
+        <p class="plabel"><b style="color: #2a17c4">Ja-listan</b>, alla som sagt ja till annonsen</p>
+        <div class="plist">
+          <div class="prow">
+              <span class="pav" aria-hidden="true">SL</span>
+              <div class="pinfo"><div class="pname">Sara L.</div><div class="prole">Redovisningsekonom i fem år, Solna</div></div>
+              <div class="pbtns"><button class="mini no" type="button" aria-label="Nej till Sara L." data-person="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><button class="mini yes" type="button" aria-label="Ja till Sara L." data-person="yes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.8-4.7-9.4-9.5C1.5 7.6 3.6 4.5 7 4.5c2 0 3.3 1 5 2.8 1.7-1.8 3-2.8 5-2.8 3.4 0 5.5 3.1 4.4 6.5-1.6 4.8-9.4 9.5-9.4 9.5z"></path></svg></button></div>
+            </div>
+            <div class="prow">
+              <span class="pav" aria-hidden="true">JP</span>
+              <div class="pinfo"><div class="pname">Johan P.</div><div class="prole">Civilekonom, kan börja direkt</div></div>
+              <div class="pbtns"><button class="mini no" type="button" aria-label="Nej till Johan P." data-person="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><button class="mini yes" type="button" aria-label="Ja till Johan P." data-person="yes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.8-4.7-9.4-9.5C1.5 7.6 3.6 4.5 7 4.5c2 0 3.3 1 5 2.8 1.7-1.8 3-2.8 5-2.8 3.4 0 5.5 3.1 4.4 6.5-1.6 4.8-9.4 9.5-9.4 9.5z"></path></svg></button></div>
+            </div>
+            <div class="prow">
+              <span class="pav" aria-hidden="true">AH</span>
+              <div class="pinfo"><div class="pname">Amir H.</div><div class="prole">Lönekonsult, Stockholm</div></div>
+              <div class="pbtns"><button class="mini no" type="button" aria-label="Nej till Amir H." data-person="no"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><button class="mini yes" type="button" aria-label="Ja till Amir H." data-person="yes"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 20.5s-7.8-4.7-9.4-9.5C1.5 7.6 3.6 4.5 7 4.5c2 0 3.3 1 5 2.8 1.7-1.8 3-2.8 5-2.8 3.4 0 5.5 3.1 4.4 6.5-1.6 4.8-9.4 9.5-9.4 9.5z"></path></svg></button></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec lav" id="priser" aria-labelledby="pris-h">
+  <div class="fl lb" style="width: 900px; height: 700px; left: -320px; top: -180px" aria-hidden="true"></div>
+  <div class="fl la" style="width: 1000px; height: 700px; right: -360px; bottom: -260px" aria-hidden="true"></div>
+  <svg class="grain" aria-hidden="true"><rect width="100%" height="100%" filter="url(#hiroGrain)"></rect></svg>
+  <div class="wrap center">
+    <h2 class="h2" id="pris-h">Matchningen är gratis. Alltid.</h2>
+    <div class="seg" role="group" aria-label="Visa priser för">
+      <span class="thumb" aria-hidden="true"></span>
+      <button type="button" aria-pressed="true" data-side="rek">Jag rekryterar</button>
+      <button type="button" aria-pressed="false" data-side="sok">Jag söker jobb</button>
+    </div>
+
+    <div class="price reveal" id="price-rek">
+        <div class="ptop">
+          <div>
+            <div class="roll pname-r" aria-hidden="true"><div class="strip" style="transform: translateY(0%)"><span>Gratis</span><span>Pro</span><span>Business</span><span>Enterprise</span></div></div>
+            <div class="pline" id="p-line">Upp till 6 annonser, Ja-listan och grundsiffror.</div>
+          </div>
+          <div>
+            <div class="roll pbig" aria-hidden="true"><div class="strip" style="transform: translateY(0%)"><span>0 kr</span><span>499 kr</span><span>999 kr</span><span>Offert</span></div></div>
+            <div class="pper" id="p-per">för alltid</div>
+          </div>
+        </div>
+        <p class="sr" aria-live="polite" id="p-sr">Gratis, 0 kr, för alltid.</p>
+        <div class="slider">
+          <div class="slabel"><label for="annonser">Hur många annonser vill ni swipa kandidater på?</label><span class="sval" id="ads-label">6 annonser</span></div>
+          <input class="range" id="annonser" type="range" min="1" max="60" step="1" value="6" style="background: linear-gradient(90deg, #6b4dff 0 8.47%, #ddd3ff 8.47% 100%) center / 100% 8px no-repeat">
+          <div class="ticks" aria-hidden="true"><span style="left: 8.47%">6</span><span style="left: 32.2%">20</span><span style="left: 83.05%">50</span></div>
+        </div>
+        <div class="pfoot">
+          <p>Hela teamet ingår, och de tre första månaderna kostar ingenting. Inget kort för att börja.</p>
+          <a class="cta ind" href="https://app.hiro.se/registrera/rekryterare">Kom igång</a>
+        </div>
+        <button class="more" type="button" aria-expanded="false" aria-controls="cmp-mer" data-more style="margin-top: 14px; color: #2a17c4"><span class="pm" aria-hidden="true"></span><span class="lbl">Jämför nivåerna</span></button>
+        <div id="cmp-mer" hidden>
+                      <div class="reveal">
+              <div class="cmpw">
+                <table class="cmp">
+                  <thead><tr><th scope="col"><span class="sr">Nivå</span></th><th scope="col">Gratis</th><th scope="col">Pro</th><th scope="col">Business</th><th scope="col">Enterprise</th></tr></thead>
+                  <tbody>
+                    <tr><th scope="row">Pris per månad</th><td>0 kr</td><td>499 kr</td><td>999 kr</td><td>Offert</td></tr>
+                    <tr><th scope="row">Annonser att swipa kandidater på</th><td>6</td><td>20</td><td>50</td><td>Fler än 50</td></tr>
+                    <tr><th scope="row">Ja-listan</th><td>Ja</td><td>Ja</td><td>Ja</td><td>Ja</td></tr>
+                    <tr><th scope="row">Användare</th><td>Hela teamet</td><td>Hela teamet</td><td>Hela teamet</td><td>Hela teamet</td></tr>
+                    <tr><th scope="row">Dashboard</th><td>Grundsiffror</td><td>Mer data och insikter</td><td>Som Pro, plus export</td><td>Som Business</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="boost">Priset gäller per bolag, och hela teamet ingår på alla nivåer. Vill ni synas för fler kan ni boosta en annons: ni väljer budget per dag och antal dagar, betalar bara för visningar som blivit av, och annonsen visas bara för kandidater som redan passar.</p>
+            </div>
+        </div>
+      </div>
+
+    <div class="sokp reveal" id="price-sok" hidden>
+        <div class="tier free">
+          <div class="tn">Gratis</div>
+          <div class="tp">0 kr</div>
+          <p>Swipa, matcha och chatta. Det kostar aldrig något.</p>
+        </div>
+        <div class="tier plus">
+          <div class="tn">Plus</div>
+          <div class="tp">79 kr i månaden</div>
+          <p>Insikter och data som gör det lättare att landa drömjobbet.</p>
+          <p class="small">Till exempel vilka roller du sticker ut för, och om rekryterare för en viss roll stannar extra länge på din profil.</p>
+        </div>
+      </div>
+  </div>
+</section>
+
+<section class="sec ind" id="vi" aria-labelledby="vi-h">
+  <div class="fl ia" style="width: 900px; height: 700px; left: -320px; top: -260px" aria-hidden="true"></div>
+  <div class="fl ib" style="width: 900px; height: 700px; right: -260px; bottom: -300px" aria-hidden="true"></div>
+  <div class="wrap two">
+    <figure class="portrait">
+      <div class="mono">
+        <div class="fl la" style="width: 120%; height: 100%; left: -40%; top: -30%" aria-hidden="true"></div>
+        <div class="fl lb" style="width: 100%; height: 90%; right: -40%; bottom: -30%" aria-hidden="true"></div>
+        <img src="assets/baltzar.jpg" alt="Baltzar Mattsson Rimhagen" width="400" height="400">
+      </div>
+      <figcaption>Baltzar Mattsson Rimhagen, grundare</figcaption>
+    </figure>
+    <div>
+      <h2 class="h2" id="vi-h">Byggt i Sverige.</h2>
+      <p class="lead">Hiro Group AB är ett litet bolag. Mejlar du oss hamnar det hos grundaren.</p>
+      <a class="mail" href="mailto:baltzar@hiro.se">baltzar@hiro.se</a>
+      <div class="morelist">
+        <button class="more" type="button" aria-expanded="false" aria-controls="vi-why" data-more><span class="pm" aria-hidden="true"></span><span class="lbl">Varför Hiro finns</span></button>
+        <div id="vi-why" hidden>
+                      <p class="story reveal">Att söka jobb har länge betytt att skicka ett CV och vänta. Att rekrytera har betytt att sålla i högar av ansökningar från folk man sedan aldrig hör av sig till. Hiro vänder på ordningen: först ett ja från båda, sedan ett samtal.</p>
+        </div>
+        <button class="more" type="button" aria-expanded="false" aria-controls="vi-never" data-more><span class="pm" aria-hidden="true"></span><span class="lbl">Det här gör vi aldrig</span></button>
+        <div id="vi-never" hidden>
+                      <ul class="never reveal">
+              <li>Låter någon kontakta dig innan ni matchat.</li>
+              <li>Säljer eller delar din data.</li>
+              <li>Lagrar personuppgifter utanför EU.</li>
+              <li>Hittar på profiler eller jobb.</li>
+              <li>Gör det svårt att gå. Raderar du kontot är allt borta.</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="end live" aria-label="Kom igång">
+  <div class="half l live" aria-hidden="true">
+    <div class="fl la d1" style="width: 90%; height: 80%; left: -20%; top: -10%"></div>
+    <div class="fl lb d2" style="width: 80%; height: 70%; right: -30%; bottom: -20%"></div>
+    <svg class="grain"><rect width="100%" height="100%" filter="url(#hiroGrain)"></rect></svg>
+  </div>
+  <div class="half r live" aria-hidden="true">
+    <div class="fl ia d2" style="width: 90%; height: 80%; left: -30%; bottom: -20%"></div>
+    <div class="fl ib d3" style="width: 80%; height: 70%; right: -20%; top: -20%"></div>
+  </div>
+  <p class="endslo"><span class="sa">Jobb, när båda vill.</span><span class="sb" aria-hidden="true">Jobb, när båda vill.</span></p>
+  <div class="bigwm" aria-hidden="true">
+    <span class="wa"><span class="wm live">Hi<span class="ro">ro<span class="dot">.</span><span class="tail">ro<span class="dot">.</span></span></span></span></span>
+    <span class="wb"><span class="wm lt live">Hi<span class="ro">ro<span class="dot">.</span><span class="tail">ro<span class="dot">.</span></span></span></span></span>
+  </div>
+  <div class="endcta"><div class="glowwrap"><a class="glow" href="https://app.hiro.se/"><span class="ring" aria-hidden="true"></span><span class="gin">Öppna Hiro</span></a></div></div>
+  <footer class="foot">
+    <div class="fl1"><span>© 2026 Hiro Group AB</span><span>Org.nr 559603-3117</span></div>
+    <div class="fl2"><a href="mailto:baltzar@hiro.se">baltzar@hiro.se</a><a href="#integritet" data-legal="privacy">Integritet</a><a href="#villkor" data-legal="terms">Villkor</a></div>
+  </footer>
+</section>
+
+<dialog class="lpanel" id="legal" aria-labelledby="legal-h">
+  <div class="lhead">
+    <div><h2 class="lh" id="legal-h"></h2><p class="lup" id="legal-up"></p></div>
+    <button class="lclose" type="button" aria-label="Stäng" id="legal-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+  </div>
+  <div class="lbody" id="legal-body"></div>
+</dialog>
+
 </div>
-
-<script>
-function subscribe() {
-  const email = document.getElementById('emailInput').value;
-  if (!email || !email.includes('@')) {
-    document.getElementById('emailInput').style.outline = '2px solid #e8440a';
-    setTimeout(() => document.getElementById('emailInput').style.outline = '', 1000);
-    return;
-  }
-  document.getElementById('form').style.display = 'none';
-  document.getElementById('thanks').style.display = 'block';
-}
-
-document.getElementById('emailInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') subscribe();
-});
-
-// Animate dots
-let d = 0;
-setInterval(() => {
-  document.querySelectorAll('.dot').forEach((dot, i) => {
-    dot.classList.toggle('active', i === d);
-  });
-  d = (d + 1) % 3;
-}, 1800);
-</script>
+<script src="assets/site.js"></script>
 </body>
 </html>
