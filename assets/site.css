@@ -312,6 +312,8 @@ a{color:#2a17c4}a:hover{color:#3a1fe0}
 .tier.free p{color:#3f3f46}
 .tier.plus p{color:#e4dcff}
 .tier .small{font-size:14px;opacity:.9}
+.tier{position:relative}
+.tier .soon{position:absolute;top:20px;right:20px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);color:#fff;font-size:12px;font-weight:600;line-height:1.2;letter-spacing:.02em}
 
 /* vi */
 .portrait{margin:0;display:flex;flex-direction:column;gap:14px;align-items:flex-start;justify-self:center}
