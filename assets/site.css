@@ -58,8 +58,8 @@ a{color:#2a17c4}a:hover{color:#3a1fe0}
 .half.l{left:0;background:#f1edff}
 .half.r{right:0;background:#3a1fe0}
 .slogan{position:absolute;left:0;right:0;top:112px;margin:0;text-align:center;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(64px,9.4cqw,150px);line-height:1;letter-spacing:-0.02em;z-index:6;pointer-events:none}
-.slogan .sa{display:block;color:#2a17c4;clip-path:inset(0 50% 0 0)}
-.slogan .sb{position:absolute;inset:0;display:block;color:#efeaff;clip-path:inset(0 0 0 50%)}
+.slogan .sa{display:block;color:#2a17c4;clip-path:inset(-0.3em 50% -0.3em -0.3em)}
+.slogan .sb{position:absolute;inset:0;display:block;color:#efeaff;clip-path:inset(-0.3em -0.3em -0.3em 50%)}
 .deck-h{position:absolute;top:calc(var(--deck-y) - var(--card-h) / 2);width:var(--card-w);height:var(--card-h);z-index:5}
 .deck-h.l{left:calc(25% - var(--card-w) / 2)}
 .deck-h.r{left:calc(75% - var(--card-w) / 2);z-index:4}
@@ -332,11 +332,11 @@ a{color:#2a17c4}a:hover{color:#3a1fe0}
 .end{position:relative;height:720px;overflow:hidden;container-type:inline-size}
 .end .half{top:0;bottom:0}
 .endslo{position:absolute;left:0;right:0;top:72px;margin:0;text-align:center;font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(30px,3.2cqw,46px);line-height:1;z-index:5}
-.endslo .sa{display:block;color:#2a17c4;clip-path:inset(0 50% 0 0)}
-.endslo .sb{position:absolute;inset:0;display:block;color:#efeaff;clip-path:inset(0 0 0 50%)}
+.endslo .sa{display:block;color:#2a17c4;clip-path:inset(-0.3em 50% -0.3em -0.3em)}
+.endslo .sb{position:absolute;inset:0;display:block;color:#efeaff;clip-path:inset(-0.3em -0.3em -0.3em 50%)}
 .bigwm{position:absolute;left:0;right:0;top:104px;text-align:center;font-size:min(29cqw,420px);z-index:5;pointer-events:none}
-.bigwm .wa{display:block;color:#2a17c4;clip-path:inset(0 50% 0 0)}
-.bigwm .wb{position:absolute;inset:0;display:block;clip-path:inset(0 0 0 50%)}
+.bigwm .wa{display:block;color:#2a17c4;clip-path:inset(-0.3em 50% -0.3em -0.3em)}
+.bigwm .wb{position:absolute;inset:0;display:block;clip-path:inset(-0.3em -0.3em -0.3em 50%)}
 .endcta{position:absolute;left:0;right:0;top:572px;display:flex;justify-content:center;z-index:8}
 .glowwrap{position:relative;display:inline-flex}
 .glowwrap::before{content:'';position:absolute;inset:-18px -26px;border-radius:999px;background:radial-gradient(closest-side,rgba(182,168,255,.8),rgba(182,168,255,0));animation:breathe 4s ease-in-out infinite;pointer-events:none}
@@ -403,8 +403,9 @@ html:has(.lpanel[open]){overflow:hidden}
   .side p{font-size:16px}
   .slogan{top:494px;font-size:54px;line-height:56px}
   .slogan .l1,.slogan .l2{display:block}
-  .slogan .sa{clip-path:inset(0 0 50% 0)}
-  .slogan .sb{clip-path:inset(50% 0 0 0)}
+  .slogan .sa{clip-path:none}
+  .slogan .sa .l2,.slogan .sb .l1{visibility:hidden}
+  .slogan .sb{clip-path:none}
   .hero.live .slogan{animation:hslo 11s infinite}
   .ct{font-size:17px}
   .pcard .ct{font-size:21px}
